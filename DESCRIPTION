@@ -1,0 +1,30 @@
+Type: Package
+Package: dendroMix
+Encoding: UTF-8
+Title: Dendrogram Mixing Measures
+Date: 2025-10-09
+Version: 0.1-10
+Authors@R: c(person("Linh","Do",role=c("aut","cre"),
+                    email="linhdo.math@gmail.com"),
+             person("Dat","Do",role="aut"))
+Description: Tools for summarizing and selecting mixture models via dendrograms 
+  constructed from overfitted latent mixing measures. The methods bridge 
+  hierarchical clustering and mixture modeling, providing consistent selection 
+  of mixture components and interpretable hierarchical structure discovery. 
+  Includes functions for simulation, visualization, and applications such as 
+  single-cell RNA-seq analysis.
+License: MIT + file LICENSE
+Depends:
+   R (>= 4.1)
+Imports:
+   stats,
+   graphics,
+Suggests:
+    knitr,
+    rmarkdown,
+    ggplot2
+LazyData: true
+LazyDataCompression: xz
+NeedsCompilation: no
+VignetteBuilder: knitr
+RoxygenNote: 7.3.3

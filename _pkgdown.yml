@@ -1,0 +1,17 @@
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+navbar:
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Vignettes"
+      href: articles/index.html
+    - text: "Functions"
+      href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/stephenslab/gbcd
+      aria-label: "GitHub repository"
+
