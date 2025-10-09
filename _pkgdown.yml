@@ -1,3 +1,5 @@
+url: https://Ldo3.github.io/dendroMix
+
 template:
   bootstrap: 5
   bootswatch: flatly
@@ -12,6 +14,10 @@ navbar:
       href: reference/index.html
   right:
     - icon: fa-github
-      href: https://github.com/stephenslab/gbcd
+      href: https://github.com/Ldo3/dendroMix
       aria-label: "GitHub repository"
 
+articles:
+  - title: "Getting Started"
+    contents:
+      - getting-started

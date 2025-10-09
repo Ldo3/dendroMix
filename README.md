@@ -16,7 +16,7 @@ visualization, and applications such as single-cell RNA-seq analysis.
 
 ## Citing this work
 
-If you find the gbcd R package or any of the source code in this
+If you find the dendroMix R package or any of the source code in this
 repository useful for your work, please cite:
 
 > Dat Do, Linh Do, Scott A. McKinley, Jonathan Terhorst, and XuanLong
