@@ -1,12 +1,3 @@
-url: https://Ldo3.github.io/dendroMix
-
-template:
-  bootstrap: 5
-  bootswatch: flatly
-  bslib:
-    container: "fluid"
-
-
 navbar:
   left:
     - text: "Home"
