@@ -14,7 +14,7 @@ Description: Tools for summarizing and selecting mixture models via dendrograms
   Includes functions for simulation, visualization, and applications such as 
   single-cell RNA-seq analysis.
 License: MIT + file LICENSE
-URL: https://github.com/Ldo3/dendroMix
+URL: https://Ldo3.github.io/dendroMix, https://github.com/Ldo3/dendroMix
 Depends:
    R (>= 4.1)
 Imports:
