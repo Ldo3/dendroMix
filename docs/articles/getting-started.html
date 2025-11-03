@@ -69,6 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>getting-started</h1>
+                        <h4 data-toc-skip class="author">Linh Do</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Ldo3/dendroMix/blob/HEAD/vignettes/getting-started.Rmd"><code>vignettes/getting-started.Rmd</code></a></small>
@@ -78,8 +79,202 @@
 
     
     
+<p>In this page, we introduce how to use <code>dendroMix</code> to
+summarize and select mixture models via dendrograms constructed from
+overfitted latent mixing measures.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Ldo3.github.io/dendroMix" class="external-link">dendroMix</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Ldo3.github.io/dendroMix" class="external-link">dendroMix</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/" class="external-link">mclust</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="generate-data-and-estimated-parameter-of-the-overfitted-model">Generate data and estimated parameter of the overfitted model<a class="anchor" aria-label="anchor" href="#generate-data-and-estimated-parameter-of-the-overfitted-model"></a>
+</h2>
+<p>We firstly simulate data from the mixture of 3 univariate normal
+distributions with the mixing proportions are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.3</mn><mo>,</mo><mn>0.4</mn><mo>,</mo><mn>0.3</mn></mrow><annotation encoding="application/x-tex">0.3, 0.4, 0.3</annotation></semantics></math>,
+actual means are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">-2, 0, 3</annotation></semantics></math>,
+and the corresponding standard deviations are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.5</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">0.5, 1, 0.7</annotation></semantics></math>.
+We then start with using an overfitted of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">k=10</annotation></semantics></math>
+components and estimate the corresponding parameters using
+<code>mclust</code> package.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># true mixture parameters</span></span>
+<span><span class="va">p_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span><span class="op">)</span>      <span class="co"># mixing proportions</span></span>
+<span><span class="va">mu_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>           <span class="co"># means</span></span>
+<span><span class="va">sd_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0.7</span><span class="op">)</span>        <span class="co"># standard deviations</span></span>
+<span><span class="va">sigma_true</span> <span class="op">&lt;-</span> <span class="va">sd_true</span><span class="op">^</span><span class="fl">2</span></span>
+<span></span>
+<span><span class="co"># sample sizes</span></span>
+<span><span class="va">n</span> <span class="op">=</span> <span class="fl">500</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, size <span class="op">=</span> <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="va">p_true</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean <span class="op">=</span> <span class="va">mu_true</span><span class="op">[</span><span class="va">z</span><span class="op">]</span>, sd <span class="op">=</span> <span class="va">sd_true</span><span class="op">[</span><span class="va">z</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># visualization</span></span>
+<span><span class="co"># Create grid for density curves</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plotting grid</span></span>
+<span><span class="va">xgrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># component densities *weighted by p*</span></span>
+<span><span class="va">dens_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xgrid</span>, comp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>,<span class="st">"2"</span>,<span class="st">"3"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">mu_true</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">comp</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>         sd <span class="op">=</span> <span class="va">sd_true</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">comp</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>         p  <span class="op">=</span> <span class="va">p_true</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">comp</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>         density <span class="op">=</span> <span class="va">p</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">mu</span>, <span class="va">sd</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># total mixture density</span></span>
+<span><span class="va">dens_total</span> <span class="op">&lt;-</span> <span class="va">dens_comp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>density <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># sensible histogram binwidth (Freedman–Diaconis)</span></span>
+<span><span class="va">bw</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html" class="external-link">IQR</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dens_total</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">density</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dens_comp</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">density</span>, color <span class="op">=</span> <span class="va">comp</span><span class="op">)</span>,</span>
+<span>            linewidth <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Component"</span>,</span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`1` <span class="op">=</span> <span class="st">"#E41A1C"</span>, `2` <span class="op">=</span> <span class="st">"#377EB8"</span>, `3` <span class="op">=</span> <span class="st">"#4DAF4A"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Gaussian Mixture Model (True Density Overlay)"</span>, x <span class="op">=</span> <span class="st">"X"</span>, y <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/generate%20data-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">K</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html" class="external-link">Mclust</a></span><span class="op">(</span><span class="va">X</span>, G <span class="op">=</span> <span class="va">K</span>, modelNames <span class="op">=</span> <span class="st">"V"</span>, </span>
+<span>              initialization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>hcPairs <span class="op">=</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/hc.html" class="external-link">hc</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, nstart<span class="op">=</span><span class="fl">50</span><span class="op">)</span>,</span>
+<span>              control <span class="op">=</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/emControl.html" class="external-link">emControl</a></span><span class="op">(</span>itmax<span class="op">=</span><span class="fl">1000</span>, eps<span class="op">=</span><span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p_hat</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">pro</span></span>
+<span><span class="va">mus_hat</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">mean</span></span>
+<span><span class="va">sigmas_hat</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">variance</span><span class="op">$</span><span class="va">sigmasq</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="running-dendromix-and-visualizing-the-output">Running dendroMix and visualizing the output<a class="anchor" aria-label="anchor" href="#running-dendromix-and-visualizing-the-output"></a>
+</h2>
+<p>Given the output from <code>mclust</code>, we are ready to construct
+the dendrogram of mixing measures via <code>dendroMix</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dmm</span> <span class="op">=</span> <span class="fu"><a href="../reference/dendrogram_mixing.html">dendrogram_mixing</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">p_hat</span>,</span>
+<span>                        thetas <span class="op">=</span> <span class="va">mus_hat</span>,</span>
+<span>                        sigmas <span class="op">=</span> <span class="va">sigmas_hat</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="fu"><a href="../reference/plot_dendrogram_mixing.html">plot_dendrogram_mixing</a></span><span class="op">(</span><span class="va">dmm</span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/dendrogram-1.png" width="700"></p>
+<p>The dendrogram plot shows the evidence of 3 Gaussian disstributions
+here. We can extract the dendrogram estimated parameters at this
+level.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"The dendrogram estimated parameters at level k ="</span>,<span class="fl">3</span> <span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The dendrogram estimated parameters at level k = 3"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Estimated mixing proportions:"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Estimated mixing proportions:"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">ps</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.3666748 0.3550977 0.2782276</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Estimated means:"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Estimated means:"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thetas</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          1          2          4 </span></span>
+<span><span class="co">#&gt; -0.3073676  2.8953948 -2.1485151</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Estimated sigma:"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Estimated sigma:"</span></span>
+<span><span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sigmas</span></span>
+<span><span class="co">#&gt; [1] 0.5613664 0.6085194 0.2140256</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p_hat</span> <span class="op">=</span> <span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">ps</span></span>
+<span><span class="va">mu_hat</span> <span class="op">=</span> <span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">thetas</span></span>
+<span><span class="va">sd_hat</span> <span class="op">=</span> <span class="va">dmm</span><span class="op">$</span><span class="va">Gs</span><span class="op">[[</span><span class="va">K</span> <span class="op">-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sigmas</span></span>
+<span><span class="va">mix_components_df</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">mu</span>, <span class="va">sd</span>, <span class="va">xgrid</span>, <span class="va">label</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sd</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">K</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">xgrid</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span>
+<span>    comp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">xgrid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    density <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="va">p</span><span class="op">[</span><span class="va">k</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">xgrid</span>, <span class="va">mu</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>, <span class="va">sd</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    model <span class="op">=</span> <span class="va">label</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">mix_total_df</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">components_df</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">components_df</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>density <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## ---- optional: align components by mean to mitigate label switching ----</span></span>
+<span><span class="va">align_by_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span>, <span class="va">mu</span>, <span class="va">sd</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">p</span><span class="op">[</span><span class="va">o</span><span class="op">]</span>, mu <span class="op">=</span> <span class="va">mu</span><span class="op">[</span><span class="va">o</span><span class="op">]</span>, sd <span class="op">=</span> <span class="va">sd</span><span class="op">[</span><span class="va">o</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## ---- build plotting data ----</span></span>
+<span><span class="co"># Grid</span></span>
+<span><span class="va">xgrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># (Optional) Align both sets for cleaner visual comparison</span></span>
+<span><span class="co"># If you don't have true params, skip the "true" part.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"p_true"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">true</span> <span class="op">&lt;-</span> <span class="fu">align_by_mean</span><span class="op">(</span><span class="va">p_true</span>, <span class="va">mu_true</span>, <span class="va">sd_true</span><span class="op">)</span></span>
+<span>  <span class="va">comp_true</span>  <span class="op">&lt;-</span> <span class="fu">mix_components_df</span><span class="op">(</span><span class="va">true</span><span class="op">$</span><span class="va">p</span>, <span class="va">true</span><span class="op">$</span><span class="va">mu</span>, <span class="va">true</span><span class="op">$</span><span class="va">sd</span>, <span class="va">xgrid</span>, <span class="st">"True"</span><span class="op">)</span></span>
+<span>  <span class="va">total_true</span> <span class="op">&lt;-</span> <span class="fu">mix_total_df</span><span class="op">(</span><span class="va">comp_true</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">hat</span>  <span class="op">&lt;-</span> <span class="fu">align_by_mean</span><span class="op">(</span><span class="va">p_hat</span>, <span class="va">mu_hat</span>, <span class="va">sd_hat</span><span class="op">)</span></span>
+<span><span class="va">comp_hat</span>  <span class="op">&lt;-</span> <span class="fu">mix_components_df</span><span class="op">(</span><span class="va">hat</span><span class="op">$</span><span class="va">p</span>, <span class="va">hat</span><span class="op">$</span><span class="va">mu</span>, <span class="va">hat</span><span class="op">$</span><span class="va">sd</span>, <span class="va">xgrid</span>, <span class="st">"Estimated"</span><span class="op">)</span></span>
+<span><span class="va">total_hat</span> <span class="op">&lt;-</span> <span class="fu">mix_total_df</span><span class="op">(</span><span class="va">comp_hat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine frames that exist</span></span>
+<span><span class="va">comp_all</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"comp_true"</span><span class="op">)</span><span class="op">)</span> <span class="va">comp_true</span>, <span class="va">comp_hat</span><span class="op">)</span></span>
+<span><span class="va">total_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"total_true"</span><span class="op">)</span><span class="op">)</span> <span class="va">total_true</span>, <span class="va">total_hat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sensible histogram binwidth (Freedman–Diaconis)</span></span>
+<span><span class="va">bw</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html" class="external-link">IQR</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## ---- plot ----</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># totals (thick solid)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">total_all</span>,</span>
+<span>            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">density</span>, color <span class="op">=</span> <span class="va">model</span><span class="op">)</span>,</span>
+<span>            linewidth <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># components (thinner, dashed/dotted)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">comp_all</span>,</span>
+<span>            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">density</span>, color <span class="op">=</span> <span class="va">model</span>, linetype <span class="op">=</span> <span class="va">model</span>,</span>
+<span>                group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">comp</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True"</span> <span class="op">=</span> <span class="st">"#377EB8"</span>, <span class="st">"Estimated"</span> <span class="op">=</span> <span class="st">"#E41A1C"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"True"</span> <span class="op">=</span> <span class="st">"dashed"</span>, <span class="st">"Estimated"</span> <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Gaussian Mixture: True vs Estimated"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"X"</span>, y <span class="op">=</span> <span class="st">"Density"</span>, color <span class="op">=</span> <span class="st">"Model"</span>, linetype <span class="op">=</span> <span class="st">"Model"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/plot%20with%20estimated%20parameters-1.png" width="700"></p>
+<p>In this plot,</p>
+<ul>
+<li><p>The thick solid lines (red = Estimated, blue = True) show the
+total mixture density — the sum of all weighted Gaussian components for
+each model.</p></li>
+<li>
+<p>The dashed and dotted lines correspond to the individual mixture
+components (each Gaussian) within the true or estimated model:</p>
+<ul>
+<li><p>Dashed blue -&gt; each true Gaussian component scaled by its
+weight.</p></li>
+<li><p>Dotted red -&gt; each estimated Gaussian component scaled by its
+estimated weight.</p></li>
+</ul>
+</li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
