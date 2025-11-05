@@ -4,16 +4,30 @@
 \alias{plot_dendrogram_mixing}
 \title{Plot dendrogram of mixing measures}
 \usage{
-plot_dendrogram_mixing(dmm, dim = 1, atom_size = 1, lwd = 1)
+plot_dendrogram_mixing(
+  dmm,
+  dim = 1,
+  point_size = 3,
+  line_width = 0.5,
+  palette = NULL,
+  show_legend = FALSE,
+  main = NULL
+)
 }
 \arguments{
 \item{dmm}{Output from \code{dendrogram_mixing}.}
 
 \item{dim}{Dimension to plot.}
 
-\item{atom_size}{Point size.}
+\item{point_size}{Point size.}
 
-\item{lwd}{Line width.}
+\item{line_width}{Vector of colors.}
+
+\item{palette}{Line width.}
+
+\item{show_legend}{Show colors associated with each step in the dendrogram.}
+
+\item{main}{Title name}
 }
 \value{
 A base R plot.
