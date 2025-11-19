@@ -148,7 +148,7 @@ dendrogram_mixing_multid_strong <- function(ps, thetas){
           # and recompute distances between new cluster i and all others
           D <- D[-j, -j, drop = FALSE]
           hm = ps[i] * ps[-i] / (ps[i] + ps[-i])
-          if (step < n-2) dm = rowSums((thetas[i, ] - thetas[-i, ])^2) else dm = sum((thetas[i, ] - thetas[-i, ])^2)
+          if (step < n-2) dm = rowSums((thetas[rep(i, n - step - 1), ] - thetas[-i, ])^2) else dm = sum((thetas[i, ] - thetas[-i, ])^2)
           D[i, -i] = hm * dm
           D[-i, i] = hm * dm
           D[i, i] = Inf

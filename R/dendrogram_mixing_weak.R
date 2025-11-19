@@ -189,8 +189,8 @@ dendrogram_mixing_multid_weak <- function(ps, thetas, sigmas){
           mat_vec <- t(sapply(sigmas, as.vector))
           # dist_mat_sigma <- as.matrix(dist(mat_vec, method = "euclidean"))
           if (step < n-2) {
-               dm = rowSums((thetas[i, ] - thetas[-i, ])^2)
-               dms = sqrt(rowSums((mat_vec[i, ] - mat_vec[-i, ])^2))
+               dm = rowSums((thetas[rep(i, n - step - 1), ] - thetas[-i, ])^2)
+               dms = sqrt(rowSums((mat_vec[rep(i, n - step - 1), ] - mat_vec[-i, ])^2))
           } else {
                dm = sum((thetas[i, ] - thetas[-i, ])^2)
                dms = sqrt(sum((mat_vec[i, ] - mat_vec[-i, ])^2))
