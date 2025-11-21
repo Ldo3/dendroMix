@@ -135,23 +135,23 @@ summary(gmm)
 
 ```{r dendrogram and plots, fig.alt="Dendrogram of the first two dimensions"}
 # Means of each component (columns = features)
-mus_hat <- t(gmm$parameters$mean)     
-
-# Mixing weights
-p_hat <- gmm$parameters$pro         
-
-# Covariance matrices 
-sigmas_hat = gmm$parameters$variance$sigma
-Sigma_list <- lapply(seq_len(dim(sigmas_hat)[3]), function(k) sigmas_hat[,,k])
-dmm = dendrogram_mixing(ps = p_hat,
-                        thetas = mus_hat,
-                        sigmas = Sigma_list)
-
-main_title = paste("Dendrogram in the first PC")
-plot_dendrogram_mixing(dmm, dim = 1,point_size = 1, main=main_title)
-
-main_title = paste("Dendrogram in the second PC")
-plot_dendrogram_mixing(dmm, dim = 2,point_size = 1, main=main_title)
+  mus_hat <- t(gmm$parameters$mean)     
+  
+  # Mixing weights
+  p_hat <- gmm$parameters$pro         
+  
+  # Covariance matrices 
+  sigmas_hat = gmm$parameters$variance$sigma
+  Sigma_list <- lapply(seq_len(dim(sigmas_hat)[3]), function(k) sigmas_hat[,,k])
+  dmm = dendrogram_mixing(ps = p_hat,
+                          thetas = mus_hat,
+                          sigmas = Sigma_list)
+  
+  main_title = paste("Dendrogram in the first PC")
+  plot_dendrogram_mixing(dmm, dim = 1,point_size = 1, main=main_title)
+  
+  main_title = paste("Dendrogram in the second PC")
+  plot_dendrogram_mixing(dmm, dim = 2,point_size = 1, main=main_title)
 ```
 
 # Dendrogram Selection Criterion
@@ -212,7 +212,8 @@ for (i in seq_len(K_bar)) {
 
 
 ```{r DSC, fig.alt="DSC"}
-d_list = dmm$hc$height
+# d_list = (dmm$hc$height)
+d_list = cumsum(dmm$hc$height)
 ## --- Compute DSC
 rescale_d <- sqrt(d_list) / max(sqrt(d_list))
 n = nrow(lowdim_data)

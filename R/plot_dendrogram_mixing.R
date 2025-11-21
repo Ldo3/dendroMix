@@ -25,7 +25,7 @@ plot_dendrogram_mixing <- function(dmm, dim = 1,
      K_bar      <- length(Gs)
 
      # cumulative x positions
-     heights_cumsum <- c(0, heights)[-(K_bar + 1)]
+     heights_cumsum <- cumsum(c(0, heights)[-(K_bar + 1)])
 
      # collect theta matrices
      Theta <- vector("list", K_bar)
