@@ -96,26 +96,17 @@ dendrogram constructed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Ldo3.github.io/dendroMix" class="external-link">dendroMix</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/" class="external-link">mclust</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Package 'mclust' version 6.1.1</span></span>
-<span><span class="co">## Type 'citation("mclust")' for citing this R package in publications.</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org" class="external-link">mvtnorm</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'mvtnorm'</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:mclust':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     dmvnorm</span></span></code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HenrikBengtsson/matrixStats" class="external-link">matrixStats</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/" class="external-link">mclust</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org" class="external-link">mvtnorm</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HenrikBengtsson/matrixStats" class="external-link">matrixStats</a></span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"tcell_id"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bcell_id"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mono_id"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nk_id"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"naive_id"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sce_processed"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_sce_processed.html">load_sce_processed</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize color_list if not yet created (replace N with total number of cells)</span></span>
 <span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10000</span>  <span class="co"># replace this with your actual length</span></span>
@@ -135,9 +126,9 @@ dendrogram constructed.</p>
 <span><span class="va">color_list</span><span class="op">[</span><span class="va">nk_id</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>    <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="va">color_list</span><span class="op">[</span><span class="va">naive_id</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">4</span></span></code></pre></div>
 <p>Visualizing the data after applying PCA with 10 components.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># --- Prepare matrix: make rows = cells ---</span></span>
-<span><span class="va">sce_mat</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="kw">else</span> <span class="va">sce</span></span>
+<span><span class="va">sce_mat</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sce_mat</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># --- Figure out whether IDs are 0- or 1-based, then make a cell_type vector ---</span></span>
@@ -162,25 +153,23 @@ dendrogram constructed.</p>
 <span></span>
 <span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cell_type</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T cell"</span>,<span class="st">"B cell"</span>,<span class="st">"Monocyte"</span>,<span class="st">"NK cell"</span>,<span class="st">"Naive"</span>,<span class="st">"Other/Unknown"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># --- PCA to 10 components and grab first two for plotting ---</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">pca_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">sce_mat</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, scale. <span class="op">=</span> <span class="cn">TRUE</span>, rank. <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">pc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">pca_res</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># --- Grab first two of the processed PCA for plotting ---</span></span>
+<span><span class="va">pc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pc2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>,<span class="st">"PC2"</span><span class="op">)</span></span>
 <span><span class="va">pc2</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="va">cell_type</span></span>
 <span></span>
 <span><span class="co">#Extract the transformed data</span></span>
-<span><span class="va">lowdim_data</span> <span class="op">&lt;-</span> <span class="va">pca_res</span><span class="op">$</span><span class="va">x</span></span>
+<span><span class="va">lowdim_data</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">lowdim_data</span><span class="op">)</span>  </span></code></pre></div>
 <pre><code><span><span class="co">## [1] 41159    10</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compute explained variance ratio</span></span>
-<span><span class="va">explained_var</span> <span class="op">&lt;-</span> <span class="va">pca_res</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pca_res</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">explained_var</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">df_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  PC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">explained_var</span><span class="op">)</span>,</span>
 <span>  Cumulative <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">explained_var</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot cumulative explained variance</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_var</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PC</span>, y <span class="op">=</span> <span class="va">Cumulative</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -193,13 +182,13 @@ dendrogram constructed.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Dendrogram-single-cell-RNA-sequence_files/figure-html/pca%20plot-1.png" alt="Visualization" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pc2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">PC1</span>, <span class="va">PC2</span>, color <span class="op">=</span> <span class="va">cell_type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.7</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Cells in PC space (colored by type)"</span>, x <span class="op">=</span> <span class="st">"PC1"</span>, y <span class="op">=</span> <span class="st">"PC2"</span>, color <span class="op">=</span> <span class="st">"Cell type"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Dendrogram-single-cell-RNA-sequence_files/figure-html/pca%20plot-2.png" alt="Visualization" width="700"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">K_bar</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span></span>
 <span><span class="co"># Fit Gaussian Mixture Model (full covariance by default)</span></span>
@@ -215,116 +204,116 @@ dendrogram constructed.</p>
 <span><span class="co">## components: </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##  log-likelihood     n  df      BIC      ICL</span></span>
-<span><span class="co">##       -723333.2 41159 989 -1457175 -1476241</span></span>
+<span><span class="co">##       -723669.3 41159 989 -1457847 -1473330</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Clustering table:</span></span>
 <span><span class="co">##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 </span></span>
-<span><span class="co">## 2485 4240 1227 1113 2747 1958 3432 4828 2466 4137 6295  230 1536 3392 1073</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<span><span class="co">##  774 4922 2348 2465 8110 4182  209  872 4240 5149 1907 2056 1172  459 2294</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Means of each component (columns = features)</span></span>
-<span><span class="va">mus_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>     </span>
-<span></span>
-<span><span class="co"># Mixing weights</span></span>
-<span><span class="va">p_hat</span> <span class="op">&lt;-</span> <span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">pro</span>         </span>
-<span></span>
-<span><span class="co"># Covariance matrices </span></span>
-<span><span class="va">sigmas_hat</span> <span class="op">=</span> <span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">variance</span><span class="op">$</span><span class="va">sigma</span></span>
-<span><span class="va">Sigma_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sigmas_hat</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="va">sigmas_hat</span><span class="op">[</span>,,<span class="va">k</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">dmm</span> <span class="op">=</span> <span class="fu"><a href="../reference/dendrogram_mixing.html">dendrogram_mixing</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">p_hat</span>,</span>
-<span>                        thetas <span class="op">=</span> <span class="va">mus_hat</span>,</span>
-<span>                        sigmas <span class="op">=</span> <span class="va">Sigma_list</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="va">mus_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>     </span>
+<span>  </span>
+<span>  <span class="co"># Mixing weights</span></span>
+<span>  <span class="va">p_hat</span> <span class="op">&lt;-</span> <span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">pro</span>         </span>
+<span>  </span>
+<span>  <span class="co"># Covariance matrices </span></span>
+<span>  <span class="va">sigmas_hat</span> <span class="op">=</span> <span class="va">gmm</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">variance</span><span class="op">$</span><span class="va">sigma</span></span>
+<span>  <span class="va">Sigma_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sigmas_hat</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="va">sigmas_hat</span><span class="op">[</span>,,<span class="va">k</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">dmm</span> <span class="op">=</span> <span class="fu"><a href="../reference/dendrogram_mixing.html">dendrogram_mixing</a></span><span class="op">(</span>ps <span class="op">=</span> <span class="va">p_hat</span>,</span>
+<span>                          thetas <span class="op">=</span> <span class="va">mus_hat</span>,</span>
+<span>                          sigmas <span class="op">=</span> <span class="va">Sigma_list</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1</span></span>
 <span><span class="co">## [1] 10 10</span></span>
 <span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
-<span><span class="co">## -0.35892684  0.19607561 -0.11997832  0.18046720 -0.25653842  0.48499268 </span></span>
+<span><span class="co">##  0.70140369 -0.14607666  0.09853746 -0.05634262  0.27698288 -1.08928752 </span></span>
 <span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
-<span><span class="co">##  0.10664254  0.05278953 -0.07661489  0.01467459 </span></span>
+<span><span class="co">##  0.85779874  0.03394440  0.03452121  0.08187661 </span></span>
 <span><span class="co">## [1] 2</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
-<span><span class="co">##  0.42586079 -0.41074105 -0.13963643 -0.50344640  0.37977418 -0.53940380 </span></span>
-<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
-<span><span class="co">## -0.51989017  0.25281255 -0.04569602 -0.22808646 </span></span>
+<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
+<span><span class="co">## -0.125535491  0.080952362  0.122496899  0.142030740  0.025149652 -0.005272748 </span></span>
+<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
+<span><span class="co">##  0.268890843 -0.103245493  0.104779561 -0.022923640 </span></span>
 <span><span class="co">## [1] 3</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##        PC1        PC2        PC3        PC4        PC5        PC6        PC7 </span></span>
-<span><span class="co">##  0.2643206 -0.4321797  0.1137964 -0.1178397  0.6891751 -0.6467377  0.2199457 </span></span>
-<span><span class="co">##        PC8        PC9       PC10 </span></span>
-<span><span class="co">##  0.6680826 -0.5478184 -0.4251953 </span></span>
+<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
+<span><span class="co">## -0.369931084  0.118800956  0.180662612 -0.121787218  0.808559562 -0.228803758 </span></span>
+<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
+<span><span class="co">## -0.069300560 -0.262129874 -0.145504279  0.002771599 </span></span>
 <span><span class="co">## [1] 4</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##           PC1           PC2           PC3           PC4           PC5 </span></span>
-<span><span class="co">## -0.0008978379 -0.7062952758 -0.2076027192 -0.9376229526  0.6627738373 </span></span>
-<span><span class="co">##           PC6           PC7           PC8           PC9          PC10 </span></span>
-<span><span class="co">## -0.9172590785 -0.6226238566  0.4811950013 -0.4196444472 -0.1101431713 </span></span>
+<span><span class="co">##        PC1        PC2        PC3        PC4        PC5        PC6        PC7 </span></span>
+<span><span class="co">## -0.2461284 -2.6237085  1.3741872 -4.5538355  0.4716232  1.8364461  1.3179853 </span></span>
+<span><span class="co">##        PC8        PC9       PC10 </span></span>
+<span><span class="co">## -1.1876928 -0.3117930 -0.2117590 </span></span>
 <span><span class="co">## [1] 5</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
-<span><span class="co">##  0.390006249  0.201647584  0.157396875  0.135398719  0.073320320  0.052424067 </span></span>
-<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
-<span><span class="co">## -0.013031788 -0.014297344  0.020199960  0.007722548 </span></span>
+<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
+<span><span class="co">## -0.15131537  0.24727353 -0.06636070  0.06207173 -0.40105019  0.37303571 </span></span>
+<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
+<span><span class="co">## -0.13104168 -0.39219383  0.32111687  0.24115411 </span></span>
 <span><span class="co">## [1] 6</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
-<span><span class="co">## -0.972065634  0.382547440  0.154971384  0.485256460  0.627120074  0.614879302 </span></span>
-<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
-<span><span class="co">##  0.006105449 -0.100651323 -0.201592419  0.006567956 </span></span>
+<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
+<span><span class="co">##  0.21268303 -0.83919794 -0.28527233 -1.24636806  0.73730198 -1.23590784 </span></span>
+<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
+<span><span class="co">## -0.78845401  0.81655852 -0.48035437 -0.09645562 </span></span>
 <span><span class="co">## [1] 7</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##        PC1        PC2        PC3        PC4        PC5        PC6        PC7 </span></span>
-<span><span class="co">## -1.9681875 -4.6078303  4.5289333 -1.5070517 -2.4810308  1.8210424  1.3064522 </span></span>
-<span><span class="co">##        PC8        PC9       PC10 </span></span>
-<span><span class="co">## -0.1301962 -0.1485636  1.0170905 </span></span>
+<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
+<span><span class="co">##  0.991548962  0.056550757  0.007057403 -0.410301788 -0.482189638 -0.161668615 </span></span>
+<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
+<span><span class="co">## -0.098401432  0.478196512  0.061795734  0.282569857 </span></span>
 <span><span class="co">## [1] 8</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
-<span><span class="co">## -0.21141958 -2.63872479  2.01032553  0.66562966 -0.19190736 -0.03250463 </span></span>
-<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
-<span><span class="co">## -0.72632678 -0.06306723  0.02599334 -0.06343507 </span></span>
+<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
+<span><span class="co">##  0.004874373  0.220121931  0.395827265  0.732118339  0.113585645 -0.397889462 </span></span>
+<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
+<span><span class="co">##  1.813045714  0.177860927 -0.114281211 -0.031262553 </span></span>
 <span><span class="co">## [1] 9</span></span>
 <span><span class="co">## [1] 10 10</span></span>
 <span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
-<span><span class="co">##  0.64006763 -1.14097344  0.35055135 -0.77018565 -1.24267365 -0.26981866 </span></span>
+<span><span class="co">## -0.20104520 -0.21307937  0.18009811 -0.30138475  0.78404892 -0.35782132 </span></span>
 <span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
-<span><span class="co">## -0.32395959  0.39402590 -0.14913262  0.07614976 </span></span>
+<span><span class="co">## -0.24089348  0.08183946  0.10640232 -0.37370708 </span></span>
 <span><span class="co">## [1] 10</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
-<span><span class="co">##  0.895103585 -0.595446943  0.293356406  2.417808773 -0.401128222 -0.373706831 </span></span>
-<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
-<span><span class="co">##  0.214862274  0.077119422 -0.048126345 -0.005832769 </span></span>
+<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
+<span><span class="co">## -0.73218375  0.36732001  0.10015872  0.44140234  0.39715432  0.45698459 </span></span>
+<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
+<span><span class="co">##  0.14000873 -0.11082143  0.00632919  0.02996172 </span></span>
 <span><span class="co">## [1] 11</span></span>
 <span><span class="co">## [1] 10 10</span></span>
-<span><span class="co">##         PC1         PC2         PC3         PC4         PC5         PC6 </span></span>
-<span><span class="co">##  9.16700624 -0.08877325  3.61944380 -0.63890559  1.20556916  0.55861394 </span></span>
-<span><span class="co">##         PC7         PC8         PC9        PC10 </span></span>
-<span><span class="co">##  0.40434477 -0.44132706 -0.10609725 -0.23299195 </span></span>
+<span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
+<span><span class="co">##  1.353115855 -0.602387977  0.007462626  3.222246091 -0.384487053 -0.487174203 </span></span>
+<span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
+<span><span class="co">## -0.319062854  0.025730319 -0.015487979 -0.067647042 </span></span>
 <span><span class="co">## [1] 12</span></span>
 <span><span class="co">## [1] 10 10</span></span>
 <span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
-<span><span class="co">## -3.336797250 -0.885679308 -0.051276151 -0.015707293  0.004928257 -0.099708272 </span></span>
+<span><span class="co">##  0.918486845  3.542754848  2.694648955  0.042008098 -0.129833590 -0.086357087 </span></span>
 <span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
-<span><span class="co">##  0.142342418 -0.120613334 -0.008223730 -0.099960419 </span></span>
+<span><span class="co">## -0.151334913 -0.008796524  0.005867716 -0.027877091 </span></span>
 <span><span class="co">## [1] 13</span></span>
 <span><span class="co">## [1] 10 10</span></span>
 <span><span class="co">##          PC1          PC2          PC3          PC4          PC5          PC6 </span></span>
-<span><span class="co">## -0.635293687  1.471705366  0.762870470  0.106901988 -0.134862810 -0.081099669 </span></span>
+<span><span class="co">## -1.219236114 -5.032031068  4.443892817 -0.177842786 -0.436871431  0.103106441 </span></span>
 <span><span class="co">##          PC7          PC8          PC9         PC10 </span></span>
-<span><span class="co">## -0.092647763 -0.006044586  0.006380101 -0.013810032</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">main_title</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Dendrogram in the first PC"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plot_dendrogram_mixing.html">plot_dendrogram_mixing</a></span><span class="op">(</span><span class="va">dmm</span>, dim <span class="op">=</span> <span class="fl">1</span>,point_size <span class="op">=</span> <span class="fl">1</span>, main<span class="op">=</span><span class="va">main_title</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">## -0.043198182  0.006954177 -0.047594265 -0.002109692</span></span></code></pre>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="va">main_title</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Dendrogram in the first PC"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/plot_dendrogram_mixing.html">plot_dendrogram_mixing</a></span><span class="op">(</span><span class="va">dmm</span>, dim <span class="op">=</span> <span class="fl">1</span>,point_size <span class="op">=</span> <span class="fl">1</span>, main<span class="op">=</span><span class="va">main_title</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Dendrogram-single-cell-RNA-sequence_files/figure-html/dendrogram%20and%20plots-1.png" alt="Dendrogram of the first two dimensions" width="700"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">main_title</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Dendrogram in the second PC"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plot_dendrogram_mixing.html">plot_dendrogram_mixing</a></span><span class="op">(</span><span class="va">dmm</span>, dim <span class="op">=</span> <span class="fl">2</span>,point_size <span class="op">=</span> <span class="fl">1</span>, main<span class="op">=</span><span class="va">main_title</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="va">main_title</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Dendrogram in the second PC"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/plot_dendrogram_mixing.html">plot_dendrogram_mixing</a></span><span class="op">(</span><span class="va">dmm</span>, dim <span class="op">=</span> <span class="fl">2</span>,point_size <span class="op">=</span> <span class="fl">1</span>, main<span class="op">=</span><span class="va">main_title</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Dendrogram-single-cell-RNA-sequence_files/figure-html/dendrogram%20and%20plots-2.png" alt="Dendrogram of the first two dimensions" width="700"></p>
 <div class="section level2">
 <h2 id="dendrogram-selection-criterion">Dendrogram Selection Criterion<a class="anchor" aria-label="anchor" href="#dendrogram-selection-criterion"></a>
 </h2>
 <p>We provide an example of using the Dendrogram Selection Criterion
 (DSC) in selecting model from the constructed dendrogram.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loglikelihood_GMM</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span>, <span class="va">pi</span>, <span class="va">mu</span>, <span class="va">Sigma</span><span class="op">)</span> <span class="op">{</span></span>
 <span>     <span class="co"># X: n x d numeric matrix</span></span>
 <span>     <span class="co"># pi: length-k numeric vector (mixing weights)</span></span>
@@ -372,8 +361,9 @@ dendrogram constructed.</p>
 <span>     </span>
 <span>     <span class="va">llh</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood_GMM</span><span class="op">(</span><span class="va">lowdim_data</span>, <span class="va">pi_i</span>, <span class="va">mu_i</span>, <span class="va">Sigma_i</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d_list</span> <span class="op">=</span> <span class="va">dmm</span><span class="op">$</span><span class="va">hc</span><span class="op">$</span><span class="va">height</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># d_list = (dmm$hc$height)</span></span>
+<span><span class="va">d_list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">dmm</span><span class="op">$</span><span class="va">hc</span><span class="op">$</span><span class="va">height</span><span class="op">)</span></span>
 <span><span class="co">## --- Compute DSC</span></span>
 <span><span class="va">rescale_d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">d_list</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">n</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">lowdim_data</span><span class="op">)</span></span>
@@ -421,7 +411,7 @@ dendrogram constructed.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Number of components"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Height of dendrogram"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Heights between levels in dendrogram"</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Height at levels in dendrogram"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>

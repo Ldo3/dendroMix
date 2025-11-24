@@ -16,7 +16,7 @@ We consider an application of the dendrogram of mixing measures in Single-cell R
 We project the unlabeled data onto the first 10 Principal Component (PC) spaces and fit with a mixture of location-scale Gaussians with 15 components. We then visualize the 15-atom mixing measure with the dendrogram constructed.
 
 
-```{r loading packages}
+```{r loading packages, message=FALSE, warning=FALSE}
 library(dendroMix)
 library(ggplot2)
 library(mclust)
@@ -26,13 +26,13 @@ library(matrixStats)
 ```
 
 
-```{r loading data}
+```{r loading data, warning=FALSE, message=FALSE}
 data("tcell_id")
 data("bcell_id")
 data("mono_id")
 data("nk_id")
 data("naive_id")
-data("sce_processed")
+sce <- load_sce_processed()
 
 # Initialize color_list if not yet created (replace N with total number of cells)
 N <- 10000  # replace this with your actual length
@@ -57,7 +57,7 @@ Visualizing the data after applying PCA with 10 components.
 
 ```{r pca}
 # --- Prepare matrix: make rows = cells ---
-sce_mat <- if (nrow(sce) < ncol(sce)) t(sce) else sce
+sce_mat <- sce$x
 N <- nrow(sce_mat)
 
 # --- Figure out whether IDs are 0- or 1-based, then make a cell_type vector ---
@@ -82,23 +82,22 @@ set_label(naive_id,  "Naive")
 
 cell_type <- factor(cell_type, levels = c("T cell","B cell","Monocyte","NK cell","Naive","Other/Unknown"))
 
-# --- PCA to 10 components and grab first two for plotting ---
-set.seed(0)
-pca_res <- prcomp(sce_mat, center = TRUE, scale. = TRUE, rank. = 10)
-pc2 <- as.data.frame(pca_res$x[, 1:2, drop = FALSE])
+# --- Grab first two of the processed PCA for plotting ---
+pc2 <- as.data.frame(sce$x[, 1:2, drop = FALSE])
 names(pc2) <- c("PC1","PC2")
 pc2$cell_type <- cell_type
 
 #Extract the transformed data
-lowdim_data <- pca_res$x
+lowdim_data <- sce$x
 dim(lowdim_data)  
 
 # Compute explained variance ratio
-explained_var <- pca_res$sdev^2 / sum(pca_res$sdev^2)
+explained_var <- sce$sdev^2 / sum(sce$sdev^2)
 df_var <- data.frame(
   PC = seq_along(explained_var),
   Cumulative = cumsum(explained_var)
 )
+
 ```
 
 ```{r pca plot, fig.alt="Visualization"}
@@ -261,7 +260,7 @@ p2 <- ggplot(df2, aes(k, height)) +
   labs(
     x = "Number of components",
     y = "Height of dendrogram",
-    title = "Heights between levels in dendrogram"
+    title = "Height at levels in dendrogram"
   ) +
   theme_bw() +
   theme(plot.title.position = "plot",

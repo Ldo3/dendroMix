@@ -21,9 +21,9 @@ plot_dendrogram_mixing(
 
 \item{point_size}{Point size.}
 
-\item{line_width}{Vector of colors.}
+\item{line_width}{Line width.}
 
-\item{palette}{Line width.}
+\item{palette}{Vector of colors.}
 
 \item{show_legend}{Show colors associated with each step in the dendrogram.}
 
