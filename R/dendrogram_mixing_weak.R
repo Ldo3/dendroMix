@@ -243,7 +243,7 @@ dendrogram_mixing_multid_weak <- function(ps, thetas, sigmas){
           c(get_order(left), get_order(right))
      }
      order <- get_order(n - 1)  # root is the last merge row
-     labels <- if (!is.null(rownames(Gs[[1]]$thetas))) rownames(X) else as.character(seq_len(n))
+     labels <- if (!is.null(rownames(Gs[[1]]$thetas))) rownames(Gs[[1]]$thetas) else as.character(seq_len(n))
      hc = structure(
           list(merge = merge,
                height = height,

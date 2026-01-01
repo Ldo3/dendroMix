@@ -3,7 +3,7 @@ Package: dendroMix
 Encoding: UTF-8
 Title: Dendrogram Mixing Measures
 Date: 2025-10-09
-Version: 0.1-10
+Version: 0.1.10.9000
 Authors@R: c(person("Linh","Do",role=c("aut","cre"),
                     email="linhdo.math@gmail.com"),
              person("Dat","Do",role="aut"))
