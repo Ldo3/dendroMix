@@ -111,7 +111,7 @@ dendrogram_mixing_multid_strong <- function(ps, thetas){
      D <- origD
      diag(D) <- Inf
      # clusters hold the member indices for each current cluster
-     clusters = lapply(c(1:n), function(i) list(members=i, p=ps[i], theta=thetas[i]))
+     clusters = lapply(c(1:n), function(i) list(members=i, p=ps[i], theta=thetas[i, ]))
      # cluster_labels hold numbers to be placed in merge: negative for leaves, positive for merge-row indices
      cluster_labels <- - (1:n)
      merge <- matrix(0L, n - 1, 2L)
